@@ -56,7 +56,8 @@ function Form() {
                 </form>
                 {file && <video  autoPlay muted loop className="w-[400px] h-[400px] mx-20 my-10" src={URL.createObjectURL(file)} alt="Uploaded" />}
                <div  className="grid grid-cols-4 gap-14">
-                {frames.map((item ,index)=><img key={index} src={item}></img>)}
+                {frames.map((item ,index)=>
+                <a href={item} download><img key={index} src={item}></img></a>)}
                 </div>
                
             </div>
