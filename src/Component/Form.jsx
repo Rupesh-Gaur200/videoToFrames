@@ -9,7 +9,7 @@ function Form() {
     async function handleImage(e) {
         e.preventDefault();
         setFile(document.getElementById('file_name').files[0]);
-        const video = document.createElement('video');
+        const video=document.createElement('video')
         video.src = URL.createObjectURL(document.getElementById('file_name').files[0]);
         video.onloadedmetadata = () => {
             const canvas = document.createElement('canvas');
@@ -19,18 +19,15 @@ function Form() {
             
             const capturedFrames = [];
     
-            const interval = setInterval(() => {
+            video.addEventListener('timeupdate', function() {
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 capturedFrames.push(canvas.toDataURL('image/jpeg'));
-    
-                if (video.currentTime < video.duration) {
-                    video.currentTime += 1; // Adjust the interval between frames here (in seconds)
-                } else {
-                    clearInterval(interval);
-                    setFrames(capturedFrames);
-                    console.log(frames);
-                }
-            }, 1000); // Adjust the interval here (in milliseconds)
+            });
+            
+            video.addEventListener('ended', function() {
+                setFrames(capturedFrames);
+                console.log(frames);
+            });
     
             video.play();
         };
@@ -58,7 +55,9 @@ function Form() {
                     <button className="mx-20 my-10" onClick={handleImage}>Submit</button>
                 </form>
                 {file && <video  autoPlay muted loop className="w-[400px] h-[400px] mx-20 my-10" src={URL.createObjectURL(file)} alt="Uploaded" />}
-                {frames.map((item)=><img src={item}></img>)}
+               <div  className="grid grid-cols-4 gap-14">
+                {frames.map((item ,index)=><img key={index} src={item}></img>)}
+                </div>
                
             </div>
         </div>
@@ -66,53 +65,3 @@ function Form() {
 }
 
 export default Form;
-// import React, { useRef, useState } from 'react';
-
-// function VideoUploader() {
-//   const videoRef = useRef(null);
-//   const [frames, setFrames] = useState([]);
-
-//   const handleUpload = (event) => {
-//     const file = event.target.files[0];
-//     videoRef.current.src = URL.createObjectURL(file);
-//   };
-
-//   const extractFrames = () => {
-//     const video = videoRef.current;
-//     const capturedFrames = [];
-
-//     const captureFrame = (currentTime) => {
-//       const canvas = document.createElement('canvas');
-//       canvas.width = video.videoWidth;
-//       canvas.height = video.videoHeight;
-//       const ctx = canvas.getContext('2d');
-//       ctx.drawImage(video, 0, 0,300,300 ,canvas.width, canvas.height);
-//       capturedFrames.push(canvas.toDataURL('image/jpeg'));
-      
-//       if (currentTime < video.duration) {
-//         video.currentTime += 1; // Adjust the interval between frames here (in seconds)
-//         video.play();
-//       } else {
-//         setFrames(capturedFrames);
-//         console.log(frames)
-//       }
-//     };
-
-//     video.onloadedmetadata = () => {
-//       captureFrame(0);
-//     };
-//   };
-
-//   return (
-//     <div>
-//       <input type="file" accept="video/*" onChange={handleUpload} />
-//       <video ref={videoRef} controls />
-//       <button onClick={extractFrames}>Extract Frames</button>
-//       {frames.map((frame, index) => (
-//         <img key={index} src={frame} alt={`Frame ${index}`} />
-//       ))}
-//     </div>
-//   );
-// }
-
-// export default VideoUploader;
